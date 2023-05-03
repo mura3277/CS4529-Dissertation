@@ -1,0 +1,9 @@
+lib/*
+.idea/*
+Images/*
+Log_Output/*
+OBJ_files/*
+Scripts/*
+share/*
+__pycache__/*
+pyvenv.cfg
