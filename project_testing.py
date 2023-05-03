@@ -44,4 +44,12 @@ def run_scan():
                         ,"scan", "degs", span=120)
             scan.full_scan(verbosity=2, save_dir=image_dir)
 
+pr = cProfile.Profile()
+pr.enable()
 run_scan()
+pr.disable()
+s = io.StringIO()
+sortby = SortKey.CUMULATIVE
+ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+ps.print_stats()
+print(s.getvalue())
