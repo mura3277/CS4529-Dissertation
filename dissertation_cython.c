@@ -3,12 +3,12 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
-        "name": "cython_main",
+        "name": "dissertation_cython",
         "sources": [
-            "cython_main.pyx"
+            "dissertation_cython.pyx"
         ]
     },
-    "module_name": "cython_main"
+    "module_name": "dissertation_cython"
 }
 END: Cython Metadata */
 
@@ -750,8 +750,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__cython_main
-#define __PYX_HAVE_API__cython_main
+#define __PYX_HAVE__dissertation_cython
+#define __PYX_HAVE_API__dissertation_cython
 /* Early includes */
 #ifdef _OPENMP
 #include <omp.h>
@@ -962,7 +962,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "cython_main.pyx",
+  "dissertation_cython.pyx",
 };
 
 /*--- Type declarations ---*/
@@ -1216,12 +1216,12 @@ static int __Pyx_check_binary_version(void);
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 
-/* Module declarations from 'cython_main' */
-#define __Pyx_MODULE_NAME "cython_main"
-extern int __pyx_module_is_main_cython_main;
-int __pyx_module_is_main_cython_main = 0;
+/* Module declarations from 'dissertation_cython' */
+#define __Pyx_MODULE_NAME "dissertation_cython"
+extern int __pyx_module_is_main_dissertation_cython;
+int __pyx_module_is_main_dissertation_cython = 0;
 
-/* Implementation of 'cython_main' */
+/* Implementation of 'dissertation_cython' */
 static PyObject *__pyx_builtin_range;
 static const char __pyx_k_i[] = "i";
 static const char __pyx_k_x[] = "x";
@@ -1231,12 +1231,12 @@ static const char __pyx_k_name[] = "__name__";
 static const char __pyx_k_test[] = "test";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_test_2[] = "__test__";
-static const char __pyx_k_cython_main[] = "cython_main";
-static const char __pyx_k_cython_main_pyx[] = "cython_main.pyx";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
+static const char __pyx_k_dissertation_cython[] = "dissertation_cython";
+static const char __pyx_k_dissertation_cython_pyx[] = "dissertation_cython.pyx";
 static PyObject *__pyx_n_s_cline_in_traceback;
-static PyObject *__pyx_n_s_cython_main;
-static PyObject *__pyx_kp_s_cython_main_pyx;
+static PyObject *__pyx_n_s_dissertation_cython;
+static PyObject *__pyx_kp_s_dissertation_cython_pyx;
 static PyObject *__pyx_n_s_i;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_name;
@@ -1245,33 +1245,33 @@ static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_test_2;
 static PyObject *__pyx_n_s_x;
 static PyObject *__pyx_n_s_y;
-static PyObject *__pyx_pf_11cython_main_test(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x); /* proto */
+static PyObject *__pyx_pf_19dissertation_cython_test(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x); /* proto */
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_tuple_;
 static PyObject *__pyx_codeobj__2;
 /* Late includes */
 
-/* "cython_main.pyx":1
+/* "dissertation_cython.pyx":1
  * def test(x):             # <<<<<<<<<<<<<<
  *     y = 0
  *     for i in range(x):
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_11cython_main_1test(PyObject *__pyx_self, PyObject *__pyx_v_x); /*proto*/
-static PyMethodDef __pyx_mdef_11cython_main_1test = {"test", (PyCFunction)__pyx_pw_11cython_main_1test, METH_O, 0};
-static PyObject *__pyx_pw_11cython_main_1test(PyObject *__pyx_self, PyObject *__pyx_v_x) {
+static PyObject *__pyx_pw_19dissertation_cython_1test(PyObject *__pyx_self, PyObject *__pyx_v_x); /*proto*/
+static PyMethodDef __pyx_mdef_19dissertation_cython_1test = {"test", (PyCFunction)__pyx_pw_19dissertation_cython_1test, METH_O, 0};
+static PyObject *__pyx_pw_19dissertation_cython_1test(PyObject *__pyx_self, PyObject *__pyx_v_x) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("test (wrapper)", 0);
-  __pyx_r = __pyx_pf_11cython_main_test(__pyx_self, ((PyObject *)__pyx_v_x));
+  __pyx_r = __pyx_pf_19dissertation_cython_test(__pyx_self, ((PyObject *)__pyx_v_x));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_11cython_main_test(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x) {
+static PyObject *__pyx_pf_19dissertation_cython_test(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x) {
   PyObject *__pyx_v_y = NULL;
   PyObject *__pyx_v_i = NULL;
   PyObject *__pyx_r = NULL;
@@ -1285,7 +1285,7 @@ static PyObject *__pyx_pf_11cython_main_test(CYTHON_UNUSED PyObject *__pyx_self,
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("test", 0);
 
-  /* "cython_main.pyx":2
+  /* "dissertation_cython.pyx":2
  * def test(x):
  *     y = 0             # <<<<<<<<<<<<<<
  *     for i in range(x):
@@ -1294,7 +1294,7 @@ static PyObject *__pyx_pf_11cython_main_test(CYTHON_UNUSED PyObject *__pyx_self,
   __Pyx_INCREF(__pyx_int_0);
   __pyx_v_y = __pyx_int_0;
 
-  /* "cython_main.pyx":3
+  /* "dissertation_cython.pyx":3
  * def test(x):
  *     y = 0
  *     for i in range(x):             # <<<<<<<<<<<<<<
@@ -1346,18 +1346,19 @@ static PyObject *__pyx_pf_11cython_main_test(CYTHON_UNUSED PyObject *__pyx_self,
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "cython_main.pyx":4
+    /* "dissertation_cython.pyx":4
  *     y = 0
  *     for i in range(x):
  *         y += i             # <<<<<<<<<<<<<<
  *     return y
+ * 
  */
     __pyx_t_1 = PyNumber_InPlaceAdd(__pyx_v_y, __pyx_v_i); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 4, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF_SET(__pyx_v_y, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "cython_main.pyx":3
+    /* "dissertation_cython.pyx":3
  * def test(x):
  *     y = 0
  *     for i in range(x):             # <<<<<<<<<<<<<<
@@ -1367,17 +1368,19 @@ static PyObject *__pyx_pf_11cython_main_test(CYTHON_UNUSED PyObject *__pyx_self,
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "cython_main.pyx":5
+  /* "dissertation_cython.pyx":5
  *     for i in range(x):
  *         y += i
  *     return y             # <<<<<<<<<<<<<<
+ * 
+ * #def format(rays, idx):
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_y);
   __pyx_r = __pyx_v_y;
   goto __pyx_L0;
 
-  /* "cython_main.pyx":1
+  /* "dissertation_cython.pyx":1
  * def test(x):             # <<<<<<<<<<<<<<
  *     y = 0
  *     for i in range(x):
@@ -1387,7 +1390,7 @@ static PyObject *__pyx_pf_11cython_main_test(CYTHON_UNUSED PyObject *__pyx_self,
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("cython_main.test", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("dissertation_cython.test", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_y);
@@ -1404,17 +1407,17 @@ static PyMethodDef __pyx_methods[] = {
 #if PY_MAJOR_VERSION >= 3
 #if CYTHON_PEP489_MULTI_PHASE_INIT
 static PyObject* __pyx_pymod_create(PyObject *spec, PyModuleDef *def); /*proto*/
-static int __pyx_pymod_exec_cython_main(PyObject* module); /*proto*/
+static int __pyx_pymod_exec_dissertation_cython(PyObject* module); /*proto*/
 static PyModuleDef_Slot __pyx_moduledef_slots[] = {
   {Py_mod_create, (void*)__pyx_pymod_create},
-  {Py_mod_exec, (void*)__pyx_pymod_exec_cython_main},
+  {Py_mod_exec, (void*)__pyx_pymod_exec_dissertation_cython},
   {0, NULL}
 };
 #endif
 
 static struct PyModuleDef __pyx_moduledef = {
     PyModuleDef_HEAD_INIT,
-    "cython_main",
+    "dissertation_cython",
     0, /* m_doc */
   #if CYTHON_PEP489_MULTI_PHASE_INIT
     0, /* m_size */
@@ -1444,8 +1447,8 @@ static struct PyModuleDef __pyx_moduledef = {
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
-  {&__pyx_n_s_cython_main, __pyx_k_cython_main, sizeof(__pyx_k_cython_main), 0, 0, 1, 1},
-  {&__pyx_kp_s_cython_main_pyx, __pyx_k_cython_main_pyx, sizeof(__pyx_k_cython_main_pyx), 0, 0, 1, 0},
+  {&__pyx_n_s_dissertation_cython, __pyx_k_dissertation_cython, sizeof(__pyx_k_dissertation_cython), 0, 0, 1, 1},
+  {&__pyx_kp_s_dissertation_cython_pyx, __pyx_k_dissertation_cython_pyx, sizeof(__pyx_k_dissertation_cython_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_i, __pyx_k_i, sizeof(__pyx_k_i), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
@@ -1467,7 +1470,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "cython_main.pyx":1
+  /* "dissertation_cython.pyx":1
  * def test(x):             # <<<<<<<<<<<<<<
  *     y = 0
  *     for i in range(x):
@@ -1475,7 +1478,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple_ = PyTuple_Pack(3, __pyx_n_s_x, __pyx_n_s_y, __pyx_n_s_i); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
-  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_cython_main_pyx, __pyx_n_s_test, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_dissertation_cython_pyx, __pyx_n_s_test, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -1574,11 +1577,11 @@ static int __Pyx_modinit_function_import_code(void) {
 
 
 #if PY_MAJOR_VERSION < 3
-__Pyx_PyMODINIT_FUNC initcython_main(void) CYTHON_SMALL_CODE; /*proto*/
-__Pyx_PyMODINIT_FUNC initcython_main(void)
+__Pyx_PyMODINIT_FUNC initdissertation_cython(void) CYTHON_SMALL_CODE; /*proto*/
+__Pyx_PyMODINIT_FUNC initdissertation_cython(void)
 #else
-__Pyx_PyMODINIT_FUNC PyInit_cython_main(void) CYTHON_SMALL_CODE; /*proto*/
-__Pyx_PyMODINIT_FUNC PyInit_cython_main(void)
+__Pyx_PyMODINIT_FUNC PyInit_dissertation_cython(void) CYTHON_SMALL_CODE; /*proto*/
+__Pyx_PyMODINIT_FUNC PyInit_dissertation_cython(void)
 #if CYTHON_PEP489_MULTI_PHASE_INIT
 {
   return PyModuleDef_Init(&__pyx_moduledef);
@@ -1645,7 +1648,7 @@ bad:
 }
 
 
-static CYTHON_SMALL_CODE int __pyx_pymod_exec_cython_main(PyObject *__pyx_pyinit_module)
+static CYTHON_SMALL_CODE int __pyx_pymod_exec_dissertation_cython(PyObject *__pyx_pyinit_module)
 #endif
 #endif
 {
@@ -1657,7 +1660,7 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec_cython_main(PyObject *__pyx_pyinit
   #if CYTHON_PEP489_MULTI_PHASE_INIT
   if (__pyx_m) {
     if (__pyx_m == __pyx_pyinit_module) return 0;
-    PyErr_SetString(PyExc_RuntimeError, "Module 'cython_main' has already been imported. Re-initialisation is not supported.");
+    PyErr_SetString(PyExc_RuntimeError, "Module 'dissertation_cython' has already been imported. Re-initialisation is not supported.");
     return -1;
   }
   #elif PY_MAJOR_VERSION >= 3
@@ -1672,7 +1675,7 @@ if (!__Pyx_RefNanny) {
       Py_FatalError("failed to import 'refnanny' module");
 }
 #endif
-  __Pyx_RefNannySetupContext("__Pyx_PyMODINIT_FUNC PyInit_cython_main(void)", 0);
+  __Pyx_RefNannySetupContext("__Pyx_PyMODINIT_FUNC PyInit_dissertation_cython(void)", 0);
   if (__Pyx_check_binary_version() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #ifdef __Pxy_PyFrame_Initialize_Offsets
   __Pxy_PyFrame_Initialize_Offsets();
@@ -1709,7 +1712,7 @@ if (!__Pyx_RefNanny) {
   Py_INCREF(__pyx_m);
   #else
   #if PY_MAJOR_VERSION < 3
-  __pyx_m = Py_InitModule4("cython_main", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
+  __pyx_m = Py_InitModule4("dissertation_cython", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
   #else
   __pyx_m = PyModule_Create(&__pyx_moduledef);
   #endif
@@ -1727,14 +1730,14 @@ if (!__Pyx_RefNanny) {
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  if (__pyx_module_is_main_cython_main) {
+  if (__pyx_module_is_main_dissertation_cython) {
     if (PyObject_SetAttr(__pyx_m, __pyx_n_s_name, __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "cython_main")) {
-      if (unlikely(PyDict_SetItemString(modules, "cython_main", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "dissertation_cython")) {
+      if (unlikely(PyDict_SetItemString(modules, "dissertation_cython", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif
@@ -1755,12 +1758,12 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "cython_main.pyx":1
+  /* "dissertation_cython.pyx":1
  * def test(x):             # <<<<<<<<<<<<<<
  *     y = 0
  *     for i in range(x):
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_11cython_main_1test, NULL, __pyx_n_s_cython_main); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_19dissertation_cython_1test, NULL, __pyx_n_s_dissertation_cython); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -1776,11 +1779,11 @@ if (!__Pyx_RefNanny) {
   __Pyx_XDECREF(__pyx_t_1);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init cython_main", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init dissertation_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_CLEAR(__pyx_m);
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init cython_main");
+    PyErr_SetString(PyExc_ImportError, "init dissertation_cython");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();

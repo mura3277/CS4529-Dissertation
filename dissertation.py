@@ -1,5 +1,5 @@
 #Cython Imports
-import cython_main
+import dissertation_cython
 
 #Imports for execution profiling
 import io
@@ -17,13 +17,19 @@ class RayFormat(Enum):
     ORIGINAL = 1
     NO_LIST_COMP = 2
     INIT_NP_ARRAY = 3
+    CYTHON_NP_ARRAY = 4
 #Global initial format type
 global FORMAT_TYPE
 
 #Run a python function with profiling output for every iteration
 def run_func_profiled(func_to_run, iterations, format_type):
+    #Setup solution type
     global FORMAT_TYPE
-    FORMAT_TYPE = format_type
+    if format_type is None:
+        FORMAT_TYPE = RayFormat.INIT_NP_ARRAY
+    else:
+        FORMAT_TYPE = format_type
+
     #Iteration loop
     for i in range(iterations):
         pr = cProfile.Profile()
@@ -50,10 +56,14 @@ def format_ray_array(rays, idx):
         return array(new)
     #Initially generating a numpy array with the correct size and shape, then assigning values by index
     elif FORMAT_TYPE.value == RayFormat.INIT_NP_ARRAY.value:
+        run_cython_tests()
         new = zeros((len(idx[-1][0]), 3))
         for c in range(len(idx[-1][0])):
             new[c] = rays[:, idx[-1][0][c], idx[-1][1][c]]
         return new
+    elif FORMAT_TYPE.value == RayFormat.CYTHON_NP_ARRAY.value:
+        return run_cython_tests()
 
 def run_cython_tests():
-    print(cython_main.test(5))
+    print(dissertation_cython.test(5))
+    return None

@@ -38,4 +38,5 @@ def run_scan():
                     , "scan", "degs", span=120)
         scan.full_scan(verbosity=2, save_dir=image_dir)
 
-run_func_profiled(run_scan, 1, RayFormat.INIT_NP_ARRAY)
+#Run profiled simulation
+run_func_profiled(run_scan, 1, None)
