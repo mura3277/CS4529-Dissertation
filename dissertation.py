@@ -13,6 +13,7 @@ import cProfile
 import re
 from pstats import SortKey
 import matplotlib.pyplot as plt
+import datetime
 
 #Imports for formatting ray array
 from enum import Enum, auto
@@ -106,9 +107,11 @@ def graph_profiled_outputs():
 
     formats = []
     performance = []
+    total_time = 0.0
     for r in profiled_runs:
         formats.append(r["name"])
         performance.append(r["elapsed"])
+        total_time += float(r["elapsed"])
 
     y_pos = arange(len(formats))
     ax.barh(y_pos, performance, align="center")
@@ -117,5 +120,8 @@ def graph_profiled_outputs():
     ax.set_xlabel("Performance")
     ax.set_title("Execution speed of each profiled optimisation")
 
-    plt.savefig("results.png")
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    plt.savefig("Results/" + timestamp + ".png")
     plt.show()
+
+    print("Total Time For All Runs: " + str(total_time))

@@ -2,6 +2,7 @@ lib/*
 .idea/*
 build/*
 Images/*
+Results/*
 Log_Output/*
 OBJ_files/*
 Scripts/*
