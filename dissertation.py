@@ -1,5 +1,6 @@
 #Cython Imports
-import dissertation_cython
+import init_np_array
+import init_np_array_dtype
 
 #Imports for execution profiling
 import io
@@ -17,7 +18,9 @@ class RayFormat(Enum):
     ORIGINAL = 1
     NO_LIST_COMP = 2
     INIT_NP_ARRAY = 3
-    CYTHON_NP_ARRAY = 4
+    CYTHON_INIT_NP_ARRAY = 4
+    CYTHON_INIT_NP_ARRAY_DTYPE = 5
+
 #Global initial format type
 global FORMAT_TYPE
 
@@ -26,7 +29,7 @@ def run_func_profiled(func_to_run, iterations, format_type):
     #Setup solution type
     global FORMAT_TYPE
     if format_type is None:
-        FORMAT_TYPE = RayFormat.INIT_NP_ARRAY
+        FORMAT_TYPE = RayFormat.CYTHON_INIT_NP_ARRAY_DTYPE
     else:
         FORMAT_TYPE = format_type
 
@@ -50,20 +53,21 @@ def format_ray_array(rays, idx):
         return array([(rays[:, idx[-1][0][c], idx[-1][1][c]]) for c in range(len(idx[-1][0]))])
     #Removing the use of list comprehension as this can be a slow operation in Python
     elif FORMAT_TYPE.value == RayFormat.NO_LIST_COMP.value:
-        new = []
+        formatted = []
         for c in range(len(idx[-1][0])):
-            new.append(rays[:, idx[-1][0][c], idx[-1][1][c]])
-        return array(new)
+            formatted.append(rays[:, idx[-1][0][c], idx[-1][1][c]])
+        numpyArray = array(formatted)
+        return numpyArray
     #Initially generating a numpy array with the correct size and shape, then assigning values by index
     elif FORMAT_TYPE.value == RayFormat.INIT_NP_ARRAY.value:
-        run_cython_tests()
-        new = zeros((len(idx[-1][0]), 3))
+        formatted = zeros((len(idx[-1][0]), 3))
         for c in range(len(idx[-1][0])):
-            new[c] = rays[:, idx[-1][0][c], idx[-1][1][c]]
-        return new
-    elif FORMAT_TYPE.value == RayFormat.CYTHON_NP_ARRAY.value:
-        return run_cython_tests()
-
-def run_cython_tests():
-    print(dissertation_cython.test(5))
-    return None
+            formatted[c] = rays[:, idx[-1][0][c], idx[-1][1][c]]
+        return formatted
+    #Offload the array formatting to a compiled C binary
+    elif FORMAT_TYPE.value == RayFormat.CYTHON_INIT_NP_ARRAY.value:
+        formatted = init_np_array.run(rays, idx)
+        return formatted
+    elif FORMAT_TYPE.value == RayFormat.CYTHON_INIT_NP_ARRAY_DTYPE.value:
+        formatted = init_np_array_dtype.run(rays, idx)
+        return formatted
