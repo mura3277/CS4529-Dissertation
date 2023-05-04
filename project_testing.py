@@ -7,7 +7,7 @@ from project_geometry import *
 from toolbox import *
 from analysis_toolbox import *
 
-from dissertation import run_func_profiled, RayFormat
+from dissertation import run_func_profiled, graph_profiled_outputs, RayFormat
 
 medium = SALT_WATER_1200
 device = SV1010_1200Hz
@@ -41,5 +41,17 @@ def run_scan():
         scan = Scan(A_scan(device, [0, 0, 0], -60, 0, 50, 0.1, "degs", scene=scene_1), "scan", "degs", span=120)
         scan.full_scan(verbosity=2, save_dir=image_dir)
 
-#Run profiled simulation
-run_func_profiled(run_scan, 1, RayFormat.CYTHON_DICT)
+#Iterations for each optimisation step
+iterations = 1
+#Run profiled simulation for each step
+run_func_profiled(run_scan, iterations, RayFormat.ORIGINAL)
+run_func_profiled(run_scan, iterations, RayFormat.NO_LIST_COMP)
+run_func_profiled(run_scan, iterations, RayFormat.INIT_NP_ARRAY)
+run_func_profiled(run_scan, iterations, RayFormat.CYTHON_DTYPE)
+run_func_profiled(run_scan, iterations, RayFormat.CYTHON_INDEXING)
+run_func_profiled(run_scan, iterations, RayFormat.CYTHON_VIEWS)
+run_func_profiled(run_scan, iterations, RayFormat.CYTHON_RAW)
+run_func_profiled(run_scan, iterations, RayFormat.CYTHON_DICT)
+
+#Generate graph of profiled solutions
+graph_profiled_outputs()

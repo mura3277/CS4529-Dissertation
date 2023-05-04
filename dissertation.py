@@ -7,14 +7,19 @@ import cython_dict
 
 #Imports for execution profiling
 import io
+import time
 import pstats
 import cProfile
 import re
 from pstats import SortKey
+import matplotlib.pyplot as plt
 
 #Imports for formatting ray array
 from enum import Enum, auto
-from numpy import array, zeros
+from numpy import array, zeros, arange
+
+#Keep track of the final profiled data with an list of dictionaries
+profiled_runs = []
 
 #Helper Enum class for keeping track and switching between optimisation trategies
 class RayFormat(Enum):
@@ -40,18 +45,24 @@ def run_func_profiled(func_to_run, iterations, format_type):
     for i in range(iterations):
         pr = cProfile.Profile()
         pr.enable()
+        start = time.time()
         func_to_run()
+        end = time.time()
         pr.disable()
         s = io.StringIO()
-        sortby = SortKey.TIME
-        ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+        ps = pstats.Stats(pr, stream=s).sort_stats(SortKey.TIME)
         ps.print_stats()
-        format_profile_output_str(s.getvalue())
+        lines = format_profile_output_str(s.getvalue(), end - start)
+        profiled_runs.append({"name":format_type.name, "elapsed": end - start, "lines": lines})
+        for l in lines:
+            print(l)
 
-def format_profile_output_str(output_str):
-    lines = output_str.split("\n")[4:40]
-    for l in lines:
-        print(l)
+def format_profile_output_str(output_str, elapsed):
+    lines = output_str.split("\n")[4:25]
+    for i in range(len(lines)):
+        lines[i] = lines[i][3:]
+    lines.insert(0, "Total Elapsed Time: " + str(elapsed))
+    return lines
 
 #Optimising formatting the output ray array using an idx lookup.
 #This line contributed to over 40 seconds of the 76 second run that was profiled during testing.
@@ -88,3 +99,23 @@ def format_ray_array(rays, idx):
     elif FORMAT_TYPE.value == RayFormat.CYTHON_DICT.value:
         formatted = cython_dict.run(rays, idx)
         return formatted
+
+def graph_profiled_outputs():
+    plt.rcdefaults()
+    fig, ax = plt.subplots()
+
+    formats = []
+    performance = []
+    for r in profiled_runs:
+        formats.append(r["name"])
+        performance.append(r["elapsed"])
+
+    y_pos = arange(len(formats))
+    ax.barh(y_pos, performance, align="center")
+    ax.set_yticks(y_pos, labels=formats)
+    ax.invert_yaxis()  # labels read top-to-bottom
+    ax.set_xlabel("Performance")
+    ax.set_title("Execution speed of each profiled optimisation")
+
+    plt.savefig("results.png")
+    plt.show()
