@@ -3,8 +3,11 @@ from Cython.Build import cythonize
 import numpy
 
 extensions = [
-    Extension("init_np_array", ["init_np_array.pyx"], include_dirs=[numpy.get_include()]),
-    Extension("init_np_array_dtype", ["init_np_array_dtype.pyx"], include_dirs=[numpy.get_include()])
+    Extension("cython_dtype", ["cython_dtype.pyx"], include_dirs=[numpy.get_include()]),
+    Extension("cython_indexing", ["cython_indexing.pyx"], include_dirs=[numpy.get_include()]),
+    Extension("cython_views", ["cython_views.pyx"], include_dirs=[numpy.get_include()]),
+    Extension("cython_raw", ["cython_raw.pyx"], include_dirs=[numpy.get_include()]),
+    Extension("cython_dict", ["cython_dict.pyx"], include_dirs=[numpy.get_include()])
 ]
 
 setup(ext_modules=cythonize(extensions))

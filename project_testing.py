@@ -1,3 +1,7 @@
+#Disable numpy array extra logic to clean up function timings
+import os
+os.environ["NUMPY_EXPERIMENTAL_ARRAY_FUNCTION"] = "0"
+
 from project_utils import *
 from project_geometry import *
 from toolbox import *
@@ -34,9 +38,8 @@ def run_scan():
         print("Objects:", scene_1.objects)
         print("Device:", device)
         print("Medium:", medium)
-        scan = Scan(A_scan(device, [0, 0, 0], -60, 0, 50, 0.1, "degs", scene=scene_1)
-                    , "scan", "degs", span=120)
+        scan = Scan(A_scan(device, [0, 0, 0], -60, 0, 50, 0.1, "degs", scene=scene_1), "scan", "degs", span=120)
         scan.full_scan(verbosity=2, save_dir=image_dir)
 
 #Run profiled simulation
-run_func_profiled(run_scan, 1, None)
+run_func_profiled(run_scan, 1, RayFormat.CYTHON_DICT)
