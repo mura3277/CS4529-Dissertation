@@ -3,7 +3,7 @@ from project_geometry import *
 from toolbox import *
 from analysis_toolbox import *
 
-from dissertation import run_func_profiled
+from dissertation import run_func_profiled, RayFormat
 
 medium = SALT_WATER_1200
 device = SV1010_1200Hz
@@ -38,6 +38,4 @@ def run_scan():
                     , "scan", "degs", span=120)
         scan.full_scan(verbosity=2, save_dir=image_dir)
 
-run_func_profiled(run_scan, 1)
-
-
+run_func_profiled(run_scan, 1, RayFormat.INIT_NP_ARRAY)
