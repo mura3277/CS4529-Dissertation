@@ -5,9 +5,7 @@ from project_geometry import *
 from toolbox import *
 from analysis_toolbox import *
 
-import cProfile
-import re
-from pstats import SortKey
+from dissertation import run_func_profiled
 
 medium = SALT_WATER_1200
 device = SV1010_1200Hz
@@ -33,23 +31,15 @@ log_dir = r"C:\Users\Admin\PycharmProjects\Dissertation\Log_Output"
 image_dir = r"C:\Users\Admin\PycharmProjects\Dissertation\Images"
 
 def run_scan():
-    # Remove loop for a single run or set to 1.
-    for i in range(1):
-        with log_terminal_output(log_dir) as log_file:
-            print("Scene:", scene_1)
-            print("Objects:", scene_1.objects)
-            print("Device:", device)
-            print("Medium:", medium)
-            scan = Scan(A_scan(device, [0, 0, 0], -60, 0, 50, 0.1, "degs", scene=scene_1)
-                        ,"scan", "degs", span=120)
-            scan.full_scan(verbosity=2, save_dir=image_dir)
+    with log_terminal_output(log_dir) as log_file:
+        print("Scene:", scene_1)
+        print("Objects:", scene_1.objects)
+        print("Device:", device)
+        print("Medium:", medium)
+        scan = Scan(A_scan(device, [0, 0, 0], -60, 0, 50, 0.1, "degs", scene=scene_1)
+                    , "scan", "degs", span=120)
+        scan.full_scan(verbosity=2, save_dir=image_dir)
 
-pr = cProfile.Profile()
-pr.enable()
-run_scan()
-pr.disable()
-s = io.StringIO()
-sortby = SortKey.CUMULATIVE
-ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-ps.print_stats()
-print(s.getvalue())
+run_func_profiled(run_scan, 1)
+
+
