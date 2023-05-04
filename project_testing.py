@@ -29,8 +29,8 @@ corner_tri = Triangle([0, 1 ,0], [0, 1, 1], [1, 1, 0])
 scene_1 = Scene(background=FLAT_PLANE, objects=test_tet)
 
 # Run the simulation and save the image. Use your own paths.
-log_dir = r"C:\Users\Admin\PycharmProjects\Disseration\Log_Output"
-image_dir = r"C:\Users\Admin\PycharmProjects\Disseration\Images"
+log_dir = r"C:\Users\Admin\PycharmProjects\Dissertation\Log_Output"
+image_dir = r"C:\Users\Admin\PycharmProjects\Dissertation\Images"
 
 def run_scan():
     # Remove loop for a single run or set to 1.
