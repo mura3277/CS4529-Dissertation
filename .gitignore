@@ -1,5 +1,6 @@
 lib/*
 .idea/*
+build/*
 Images/*
 Log_Output/*
 OBJ_files/*
