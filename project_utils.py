@@ -22,6 +22,9 @@ from numpy import concatenate, full_like, isnan, asarray
 from timeit import default_timer
 import datetime
 
+# IMPORTS (Hayden Killoh)
+from dissertation import format_ray_array
+
 # SPEED OF SOUND
 
 def mackenzie_sos(temperature,salinity,depth):
@@ -390,7 +393,8 @@ class Scene():
             if isinstance(self.background, ObjFile):
                 self.background = Mesh(self.background)
             if not isinstance(self.background, Composite):
-                rays = array([(self.rays[:, self.idx_dict[-1][0][c], self.idx_dict[-1][1][c]]) for c in range(len(self.idx_dict[-1][0]))])
+                # Hayden Killoh Dissertation Change - Optimizing formatting ray array:
+                rays = format_ray_array(self.rays, self.idx_dict)
                 if rays.size != 0:
                     br_dists = squeeze(self.background.intersection_params(rays, self.pov))   # gets distances of rays that hit the B/G
                     self.bg_hits = squeeze(asarray(where(~isnan(br_dists))))   # sort between those that actually hit the B/G
