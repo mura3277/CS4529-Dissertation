@@ -393,8 +393,12 @@ class Scene():
             if isinstance(self.background, ObjFile):
                 self.background = Mesh(self.background)
             if not isinstance(self.background, Composite):
+                # This is the original code from the project, accounting for the largest performace slowdown
+                # rays =  array([(rays[:, idx[-1][0][c], idx[-1][1][c]]) for c in range(len(idx[-1][0]))])
+
                 # Hayden Killoh Dissertation Change - Optimizing formatting ray array:
                 rays = format_ray_array(self.rays, self.idx_dict)
+
                 if rays.size != 0:
                     br_dists = squeeze(self.background.intersection_params(rays, self.pov))   # gets distances of rays that hit the B/G
                     self.bg_hits = squeeze(asarray(where(~isnan(br_dists))))   # sort between those that actually hit the B/G

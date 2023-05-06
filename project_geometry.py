@@ -24,6 +24,9 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 # from memory_profiler import memory_usage, profile
 
+# IMPORTS (Hayden Killoh)
+from dissertation import calc_interfunction
+
 # ROTATION AND SCATTERER CLASSES
 
 class Scatterer:
@@ -1058,6 +1061,9 @@ class Triangle(Object):
     # array of rays. If no intersection, NaN is returned in that position.
 
     def interfunction(self, rays, pov):
+        """
+        #Original Interfunction code from the project
+
         rshape = rays.shape[1:] # Shape of the 2D array of rays
         rays = rays.reshape((3, rays.shape[1] * rays.shape[2])).T # Reshapes into a 2D array of vectors.
         epsilon = 1e-6
@@ -1078,6 +1084,9 @@ class Triangle(Object):
             return U, V, t
         else:
             return None, None, None
+        """
+        # Hayden Killoh Dissertation Change - Optimizing interfunction calculation:
+        return calc_interfunction(rays, pov, self.p1, self.v, self.u)
 
     def intersect(self, rays, pov):
         _, _, t = self.interfunction(rays, pov)
