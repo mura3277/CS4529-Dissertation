@@ -1,5 +1,5 @@
 # IMPORTS (Geometry)
-
+import dissertation
 from numpy import all, array, zeros, minimum, maximum, \
     clip, amin, amax, stack, multiply, ones, concatenate, divide, \
     isclose, ndarray, arctan2, pi, where, arcsin, cross, dot, matmul, \
@@ -25,7 +25,7 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 # from memory_profiler import memory_usage, profile
 
 # IMPORTS (Hayden Killoh)
-from dissertation import calc_interfunction
+from dissertation import calc_interfunction, solution_active, SolutionType
 
 # ROTATION AND SCATTERER CLASSES
 
@@ -1061,32 +1061,32 @@ class Triangle(Object):
     # array of rays. If no intersection, NaN is returned in that position.
 
     def interfunction(self, rays, pov):
-        """
-        #Original Interfunction code from the project
-
-        rshape = rays.shape[1:] # Shape of the 2D array of rays
-        rays = rays.reshape((3, rays.shape[1] * rays.shape[2])).T # Reshapes into a 2D array of vectors.
-        epsilon = 1e-6
-        T = pov - self.p1 # Vector from p1 to pov (tvec)
-        P = cross(rays, self.v.reshape((1, 3)))  # Cross product of ray and v (pvec)
-        S = dot(P, self.u) # Dot product of pvec and u (determinant).
-        inv_det = where(abs(S)>epsilon, 1 / S, NaN) # Inverse determinant
-        U = multiply(dot(P, T), inv_det)  # Barycentric coordinate u
-        # try to whittle down the number of calculations
-        if True in (U >= 0) & (U <= 1): # If u is in the triangle, calculate v and t.
-            Q = cross(T, self.u) # Cross product of tvec and edge, u. This is constant.
-            V = where((U >= 0) & (U <= 1), dot(Q, rays.transpose()), NaN) * inv_det # Barycentric coordinate v
-            t = where(((V >= 0) & (U + V <= 1)), dot(Q, self.v), NaN) * inv_det # Distance to intersection point
-            t = where(t <= 0, NaN, t) # If t is negative, the intersection point is behind the pov.
-            V = V.reshape(rshape)
-            U = U.reshape(rshape)
-            t = t.reshape(rshape)
-            return U, V, t
-        else:
-            return None, None, None
-        """
         # Hayden Killoh Dissertation Change - Optimizing interfunction calculation:
-        return calc_interfunction(rays, pov, self.p1, self.v, self.u)
+        # Maintain and run the original calculation for maintaining proper profiling results.
+        if dissertation.solution_active(SolutionType.ORIG_INTER):
+            rshape = rays.shape[1:] # Shape of the 2D array of rays
+            rays = rays.reshape((3, rays.shape[1] * rays.shape[2])).T # Reshapes into a 2D array of vectors.
+            epsilon = 1e-6
+            T = pov - self.p1 # Vector from p1 to pov (tvec)
+            P = cross(rays, self.v.reshape((1, 3)))  # Cross product of ray and v (pvec)
+            S = dot(P, self.u) # Dot product of pvec and u (determinant).
+            inv_det = where(abs(S)>epsilon, 1 / S, NaN) # Inverse determinant
+            U = multiply(dot(P, T), inv_det)  # Barycentric coordinate u
+            # try to whittle down the number of calculations
+            if True in (U >= 0) & (U <= 1): # If u is in the triangle, calculate v and t.
+                Q = cross(T, self.u) # Cross product of tvec and edge, u. This is constant.
+                V = where((U >= 0) & (U <= 1), dot(Q, rays.transpose()), NaN) * inv_det # Barycentric coordinate v
+                t = where(((V >= 0) & (U + V <= 1)), dot(Q, self.v), NaN) * inv_det # Distance to intersection point
+                t = where(t <= 0, NaN, t) # If t is negative, the intersection point is behind the pov.
+                V = V.reshape(rshape)
+                U = U.reshape(rshape)
+                t = t.reshape(rshape)
+                return U, V, t
+            else:
+                return None, None, None
+        #If the original solution is not active, hand off to calc_interfunction to test optimised functions
+        else:
+            return calc_interfunction(rays, pov, self.p1, self.v, self.u)
 
     def intersect(self, rays, pov):
         _, _, t = self.interfunction(rays, pov)

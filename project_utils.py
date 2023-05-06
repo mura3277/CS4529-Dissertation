@@ -23,7 +23,7 @@ from timeit import default_timer
 import datetime
 
 # IMPORTS (Hayden Killoh)
-from dissertation import format_ray_array
+from dissertation import format_ray_array, solution_active, SolutionType
 
 # SPEED OF SOUND
 
@@ -393,11 +393,14 @@ class Scene():
             if isinstance(self.background, ObjFile):
                 self.background = Mesh(self.background)
             if not isinstance(self.background, Composite):
-                # This is the original code from the project, accounting for the largest performace slowdown
-                # rays =  array([(rays[:, idx[-1][0][c], idx[-1][1][c]]) for c in range(len(idx[-1][0]))])
-
                 # Hayden Killoh Dissertation Change - Optimizing formatting ray array:
-                rays = format_ray_array(self.rays, self.idx_dict)
+                # Maintain and run the original calculation for maintaining proper profiling results.
+                if solution_active(SolutionType.ORIG_FORMAT):
+                    # This is the original code from the project, accounting for the largest performace slowdown
+                    rays =  array([(rays[:, idx[-1][0][c], idx[-1][1][c]]) for c in range(len(idx[-1][0]))])
+                # If the original solution is not active, hand off to calc_interfunction to test optimised functions
+                else:
+                    rays = format_ray_array(self.rays, self.idx_dict)
 
                 if rays.size != 0:
                     br_dists = squeeze(self.background.intersection_params(rays, self.pov))   # gets distances of rays that hit the B/G

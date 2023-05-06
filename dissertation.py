@@ -43,6 +43,11 @@ class SolutionType(Enum):
 #Global initial format type
 global SOLUTIONS
 
+#Helper for accessing the global SOLUTIONS from other files
+def solution_active(solution):
+    global SOLUTIONS
+    return solution in SOLUTIONS
+
 #Run a python function with profiling output for every passed iteration
 def run_func_profiled(func_to_run, iterations, solutions):
     #Setup solution type
