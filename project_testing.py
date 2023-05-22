@@ -44,14 +44,8 @@ def run_scan():
 #Iterations for each optimisation step
 iterations = 1
 #Run profiled simulation for each step
-run_func_profiled(run_scan, iterations, [SolutionType.CYTHON_DICT, SolutionType.ORIG_INTER])
-# run_func_profiled(run_scan, iterations, RayFormat.CYTHON_RAW)
-# run_func_profiled(run_scan, iterations, RayFormat.CYTHON_VIEWS)
-# run_func_profiled(run_scan, iterations, RayFormat.CYTHON_INDEXING)
-# run_func_profiled(run_scan, iterations, RayFormat.CYTHON_DTYPE)
-# run_func_profiled(run_scan, iterations, RayFormat.INIT_NP_ARRAY)
-# run_func_profiled(run_scan, iterations, RayFormat.NO_LIST_COMP)
-# run_func_profiled(run_scan, iterations, RayFormat.ORIGINAL)
+run_func_profiled(run_scan, iterations, [SolutionType.CYTHON_CLOOP, SolutionType.ORIG_INTER], graph=False)
+# run_func_profiled(run_scan, iterations, [SolutionType.CYTHON_INDEXING, SolutionType.ORIG_INTER], graph=False)
 
 #Generate graph of profiled solutions
 graph_and_log_profiled_solutions()
