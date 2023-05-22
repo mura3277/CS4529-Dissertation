@@ -5,7 +5,14 @@ Images/*
 Results/*
 Log_Output/*
 OBJ_files/*
+OBJ_files_optimised/*
+OBJ/Results/*
 Scripts/*
 share/*
 __pycache__/*
 pyvenv.cfg
+*.pyd
+OBJ/*.txt
+*.c
+pycallgraph.png
+ray_versions.txt

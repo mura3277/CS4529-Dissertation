@@ -10,6 +10,11 @@
             "C:\\Users\\Admin\\PycharmProjects\\Dissertation\\lib\\site-packages\\numpy\\core\\include\\numpy\\ndarraytypes.h",
             "C:\\Users\\Admin\\PycharmProjects\\Dissertation\\lib\\site-packages\\numpy\\core\\include\\numpy\\ufuncobject.h"
         ],
+        "extra_compile_args": [
+            "-O3",
+            "-mavx",
+            "-ffast-math"
+        ],
         "include_dirs": [
             "C:\\Users\\Admin\\PycharmProjects\\Dissertation\\lib\\site-packages\\numpy\\core\\include"
         ],

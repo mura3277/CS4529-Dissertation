@@ -1,9 +1,11 @@
 #Cython Imports
 import cython_dtype
+import cython_cloop
 import cython_indexing
 import cython_views
 import cython_raw
 import cython_dict
+import cython_inter
 
 #Imports for execution profiling
 import io
@@ -14,6 +16,8 @@ import re
 from pstats import SortKey
 import matplotlib.pyplot as plt
 import datetime
+from pycallgraph2 import PyCallGraph
+from pycallgraph2.output import GraphvizOutput
 
 #Imports for formatting ray array
 from enum import Enum, auto
@@ -28,17 +32,20 @@ profiled_runs = []
 #Helper Enum class for keeping track and switching between optimisation trategies
 class SolutionType(Enum):
     #Solutions: Format Ray Array
-    ORIG_FORMAT = auto()
-    NO_LIST_COMP = auto()
-    INIT_NP_ARRAY = auto()
-    CYTHON_DTYPE = auto()
-    CYTHON_INDEXING = auto()
+    ORIG_FORMAT = auto() #Original code to maintain baseline testing
+    NO_LIST_COMP = auto() #Avoid using Python list comp
+    INIT_NP_ARRAY = auto() #Initialize NP array with correct sizing
+    CYTHON_DTYPE = auto() #Use C style type hinting
+    CYTHON_INDEXING = auto() #Cache indexing into arrays
     CYTHON_VIEWS = auto()
     CYTHON_RAW = auto()
     CYTHON_DICT = auto()
+    CYTHON_CLOOP = auto()  # Use C style loops instead of list comp
 
     #Solutions: Interfunction
     ORIG_INTER = auto()
+    NO_SELF_INTER = auto()
+    CYTHON_INTER = auto()
 
 #Global initial format type
 global SOLUTIONS
@@ -49,26 +56,30 @@ def solution_active(solution):
     return solution in SOLUTIONS
 
 #Run a python function with profiling output for every passed iteration
-def run_func_profiled(func_to_run, iterations, solutions):
+def run_func_profiled(func_to_run, iterations, solutions, graph=False):
     #Setup solution type
     global SOLUTIONS
     SOLUTIONS = solutions
 
-    #Iteration loop
-    for i in range(iterations):
-        pr = cProfile.Profile()
-        pr.enable()
-        start = time.time()
-        func_to_run()
-        end = time.time()
-        pr.disable()
-        s = io.StringIO()
-        ps = pstats.Stats(pr, stream=s).sort_stats(SortKey.TIME)
-        ps.print_stats()
-        lines = format_profile_output_str(s.getvalue(), end - start)
-        profiled_runs.append({"solutions":[s.name for s in solutions], "elapsed": end - start, "lines": lines})
-        for l in lines:
-            print(l)
+    if graph:
+        with PyCallGraph(output=GraphvizOutput()):
+            func_to_run()
+    else:
+        #Iteration loop
+        for i in range(iterations):
+            pr = cProfile.Profile()
+            pr.enable()
+            start = time.time()
+            func_to_run()
+            end = time.time()
+            pr.disable()
+            s = io.StringIO()
+            ps = pstats.Stats(pr, stream=s).sort_stats(SortKey.TIME)
+            ps.print_stats()
+            lines = format_profile_output_str(s.getvalue(), end - start)
+            profiled_runs.append({"solutions":[s.name for s in solutions], "elapsed": end - start, "lines": lines})
+            for l in lines:
+                print(l)
 
 def format_profile_output_str(output_str, elapsed):
     lines = output_str.split("\n")[4:25]
@@ -78,10 +89,10 @@ def format_profile_output_str(output_str, elapsed):
     return lines
 
 #Optimising formatting the output ray array using an idx lookup.
-#This line contributed to over 40 seconds of the 76 second run that was profiled during testing.
 def format_ray_array(rays, idx):
     #The original version of the code
     if SolutionType.ORIG_FORMAT in SOLUTIONS:
+        # This line contributed to over 40 seconds of the 79 second run that was profiled during testing.
         return array([(rays[:, idx[-1][0][c], idx[-1][1][c]]) for c in range(len(idx[-1][0]))])
     #Removing the use of list comprehension as this can be a slow operation in Python
     elif SolutionType.NO_LIST_COMP in SOLUTIONS:
@@ -112,28 +123,34 @@ def format_ray_array(rays, idx):
     elif SolutionType.CYTHON_DICT in SOLUTIONS:
         formatted = cython_dict.run(rays, idx)
         return formatted
+    elif SolutionType.CYTHON_CLOOP in SOLUTIONS:
+        formatted = cython_cloop.run(rays, idx)
+        return formatted
 
 def calc_interfunction(rays, pov, p1, v, u):
-    rshape = rays.shape[1:]  # Shape of the 2D array of rays
-    rays = rays.reshape((3, rays.shape[1] * rays.shape[2])).T  # Reshapes into a 2D array of vectors.
-    epsilon = 1e-6
-    T = pov - p1  # Vector from p1 to pov (tvec)
-    P = cross(rays, v.reshape((1, 3)))  # Cross product of ray and v (pvec)
-    S = dot(P, u)  # Dot product of pvec and u (determinant).
-    inv_det = where(abs(S) > epsilon, 1 / S, NaN)  # Inverse determinant
-    U = multiply(dot(P, T), inv_det)  # Barycentric coordinate u
-    # try to whittle down the number of calculations
-    if True in (U >= 0) & (U <= 1):  # If u is in the triangle, calculate v and t.
-        Q = cross(T, u)  # Cross product of tvec and edge, u. This is constant.
-        V = where((U >= 0) & (U <= 1), dot(Q, rays.transpose()), NaN) * inv_det  # Barycentric coordinate v
-        t = where(((V >= 0) & (U + V <= 1)), dot(Q, v), NaN) * inv_det  # Distance to intersection point
-        t = where(t <= 0, NaN, t)  # If t is negative, the intersection point is behind the pov.
-        V = V.reshape(rshape)
-        U = U.reshape(rshape)
-        t = t.reshape(rshape)
-        return U, V, t
-    else:
-        return None, None, None
+    if SolutionType.NO_SELF_INTER in SOLUTIONS:
+        rshape = rays.shape[1:]  # Shape of the 2D array of rays
+        rays = rays.reshape((3, rays.shape[1] * rays.shape[2])).T  # Reshapes into a 2D array of vectors.
+        epsilon = 1e-6
+        T = pov - p1  # Vector from p1 to pov (tvec)
+        P = cross(rays, v.reshape((1, 3)))  # Cross product of ray and v (pvec)
+        S = dot(P, u)  # Dot product of pvec and u (determinant).
+        inv_det = where(abs(S) > epsilon, 1 / S, NaN)  # Inverse determinant
+        U = multiply(dot(P, T), inv_det)  # Barycentric coordinate u
+        # try to whittle down the number of calculations
+        if True in (U >= 0) & (U <= 1):  # If u is in the triangle, calculate v and t.
+            Q = cross(T, u)  # Cross product of tvec and edge, u. This is constant.
+            V = where((U >= 0) & (U <= 1), dot(Q, rays.transpose()), NaN) * inv_det  # Barycentric coordinate v
+            t = where(((V >= 0) & (U + V <= 1)), dot(Q, v), NaN) * inv_det  # Distance to intersection point
+            t = where(t <= 0, NaN, t)  # If t is negative, the intersection point is behind the pov.
+            V = V.reshape(rshape)
+            U = U.reshape(rshape)
+            t = t.reshape(rshape)
+            return U, V, t
+        else:
+            return None, None, None
+    elif SolutionType.CYTHON_INTER in SOLUTIONS:
+        return cython_inter.run(rays, pov, p1, v, u)
 
 def graph_and_log_profiled_solutions():
     plt.rcdefaults()
