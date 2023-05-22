@@ -397,7 +397,7 @@ class Scene():
                 # Maintain and run the original calculation for maintaining proper profiling results.
                 if solution_active(SolutionType.ORIG_FORMAT):
                     # This is the original code from the project, accounting for the largest performace slowdown
-                    rays =  array([(rays[:, idx[-1][0][c], idx[-1][1][c]]) for c in range(len(idx[-1][0]))])
+                    rays = array([(self.rays[:, self.idx_dict[-1][0][c], self.idx_dict[-1][1][c]]) for c in range(len(self.idx_dict[-1][0]))])
                 # If the original solution is not active, hand off to calc_interfunction to test optimised functions
                 else:
                     rays = format_ray_array(self.rays, self.idx_dict)
