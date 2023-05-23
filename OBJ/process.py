@@ -15,10 +15,12 @@ def process_obj_files():
 def get_obj_sizes():
     before = []
     after = []
+    names = []
     for f in os.listdir(dir_root + 'OBJ_files'):
-        before.append(os.path.getsize(dir_root + 'OBJ_files/' + f))
-        after.append(os.path.getsize(dir_root + 'OBJ_files_optimised/' + f))
-    return before, after
+        before.append(os.path.getsize(dir_root + 'OBJ_files/' + f) / 1024) #Divide by 1024 to convert from bytes to kilobytes
+        after.append(os.path.getsize(dir_root + 'OBJ_files_optimised/' + f) / 1024) #Divide by 1024 to convert from bytes to kilobytes
+        names.append(f)
+    return before, after, names
 
 def compute_diff(before, after):
     diff = []
@@ -29,17 +31,23 @@ def compute_diff(before, after):
             diff.append(0)
     return diff
 
-def graph_sizes(before, after, diff):
+def graph_sizes(before, after, diff, names):
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    plt.bar(range(len(before)), before, align='center')
-    plt.bar(range(len(after)), after, align='center')
+    plt.barh(range(len(before)), before, align='center')
+    plt.barh(range(len(after)), after, align='center')
+    plt.title("File size result of each optimised model")
+    plt.xlabel("Size (kilobytes)")
+    plt.ylabel("Model")
     plt.savefig("Results/diff-" + timestamp + ".png")
     plt.clf()
 
-    plt.bar(range(len(diff)), diff, align='center')
+    plt.barh(range(len(diff)), diff, align='center')
+    plt.title("Difference in file size of each model")
+    plt.xlabel("Amount (kilobytes)")
+    plt.ylabel("Model")
     plt.savefig("Results/size-" + timestamp + ".png")
 
 process_obj_files()
-before, after = get_obj_sizes()
+before, after, names = get_obj_sizes()
 diff = compute_diff(before, after)
-graph_sizes(before, after, diff)
+graph_sizes(before, after, diff, names)
