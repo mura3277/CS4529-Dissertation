@@ -427,7 +427,8 @@ class Scene():
             background_start = default_timer()
             if len(self.idx_dict[-1][0]):  # If there are any background hits
                 # rays which hit background fed into background scatterer
-                bg_incidents = squeeze(self.background.gen_incident(self.rays[:, self.idx_dict[-1][0], self.idx_dict[-1][1]]))
+                # bg_incidents = squeeze(self.background.gen_incident(self.rays[:, self.idx_dict[-1][0], self.idx_dict[-1][1]]))
+                bg_incidents = squeeze(self.background.gen_incident(self.rays[:, self.idx_dict[-1][0], self.idx_dict[-1][1]], filter=self.bg_hits))
                 SL[self.idx_dict[-1]] = self.background.scatterer.SL(bg_incidents)  # Input should be incident angles
             print("Finished checking background:", default_timer()-background_start)
         return SL

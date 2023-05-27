@@ -18,6 +18,10 @@ test_tet = Tetrahedron([0, 4, 2], [-2, 4, -1], [2, 4, -1], [0, 3, -1])
 test_tri = Triangle([0, 3, -1], [2, 3, -1], [0, 3, 2])
 corner_tri = Triangle([0, 1 ,0], [0, 1, 1], [1, 1, 0])
 
+obj_dir = r"C:\Users\Admin\PycharmProjects\Dissertation\OBJ_files"
+# human = Mesh(ObjFile(obj_dir + "\human.obj"))
+# tyre = Mesh(ObjFile(obj_dir + "\TYRE (1).obj"))
+
 # BACKGROUNDS
 # You can use the following backgrounds already imported to this script (see project_geometry.py):
 #
@@ -25,8 +29,16 @@ corner_tri = Triangle([0, 1 ,0], [0, 1, 1], [1, 1, 0])
 # Composites: GAUSSIAN_HILL_X, GAUSSIAN_HOLE_X, ROLLING_BANK_X
 # X can take on values 8, 32, 128, 512
 
+# test = Mesh(obj_dir + "/gaussian_hole_8.obj")
+test1 = Mesh(GAUSSIAN_HOLE_8)
+scene_1 = Scene(background=test1, objects=[])
+
 # Create a scene with the object and background
-scene_1 = Scene(background=FLAT_PLANE, objects=test_tet)
+# scene_tet = Scene(background=FLAT_PLANE, objects=test_tet)
+
+# Create a scene with a .obj model and background
+# scene_human = Scene(background=FLAT_PLANE, objects=human)
+# scene_tyre = Scene(background=FLAT_PLANE, objects=tyre)
 
 # Run the simulation and save the image. Use your own paths.
 log_dir = r"C:\Users\Admin\PycharmProjects\Dissertation\Log_Output"
@@ -36,15 +48,18 @@ def run_scan():
     with log_terminal_output(log_dir) as log_file:
         print("Scene:", scene_1)
         print("Objects:", scene_1.objects)
-        print("Device:", device)
+        print("Background:", scene_1.background)
         print("Medium:", medium)
-        scan = Scan(A_scan(device, [0, 0, 0], -60, 0, 50, 0.1, "degs", scene=scene_1), "scan", "degs", span=120)
+        print("Device:", device)
+        # Create a scan object and run the simulation
+        scan = Scan(A_scan(device, [0, 0, 0], -60, 0, 10, 0.1, "degs", scene=scene_1),"scan", "degs", span=120)
         scan.full_scan(verbosity=2, save_dir=image_dir)
+
 
 #Iterations for each optimisation step
 iterations = 1
 #Run profiled simulation for each step
-run_func_profiled(run_scan, iterations, [SolutionType.CYTHON_CLOOP, SolutionType.ORIG_INTER], graph=False)
+run_func_profiled(run_scan, iterations, [SolutionType.ORIG_FORMAT, SolutionType.ORIG_INTER], graph=False)
 # run_func_profiled(run_scan, iterations, [SolutionType.CYTHON_INDEXING, SolutionType.ORIG_INTER], graph=False)
 
 #Generate graph of profiled solutions
