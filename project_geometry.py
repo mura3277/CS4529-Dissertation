@@ -1,5 +1,5 @@
 # IMPORTS (Geometry)
-
+import dissertation
 from numpy import all, array, zeros, minimum, maximum, \
     clip, amin, amax, stack, multiply, ones, concatenate, divide, \
     isclose, ndarray, arctan2, pi, where, arcsin, cross, dot, matmul, \
@@ -23,6 +23,9 @@ from autograd import grad
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 # from memory_profiler import memory_usage, profile
+
+# IMPORTS (Hayden Killoh)
+from dissertation import calc_interfunction, solution_active, SolutionType
 
 # ROTATION AND SCATTERER CLASSES
 
@@ -454,12 +457,19 @@ class Object:
     def intersect(self, rays, pov):
         dif = self.anchor - pov
         return isclose(dif.dot(rays) * dif.dot(rays), dif.dot(dif) * rays.dot(rays))
-    def intersection_param(self, rays, pov, **kwargs):
+
+    # Finish below
+    def intersect_param(self, rays, pov, **kwargs):
+        if "min_param" in kwargs:
+            min_param = kwargs["min_param"]
+        else:
+            min_param = 0
+
         if self.intersect(rays, pov):
             print("Placeholder function only applied. This object has no explicit intersection parameters method.")
 
     def intersection_point(self, rays, pov, **kwargs):
-        intersections = self.intersection_param(rays, pov, **kwargs)
+        intersections = self.intersect_param(rays, pov, **kwargs)
         if intersections is None:
             return None
         else:
@@ -614,7 +624,7 @@ class Composite(Object):
                 return self.COMPONENTS[c].gen_normal(point)
 
     # Intersection methods
-    # A mask kwarg can be passed to the intersection method to specify which rays to consider
+
     def intersection_params(self, rays, pov, *args, **kwargs):
         self.ray_hit_count = 0
         self.hit_components=set({})
@@ -626,7 +636,7 @@ class Composite(Object):
             self.labels = list(self.COMPONENTS.keys())
             objects = list(self.COMPONENTS.values())
             for i in range(self.component_count):
-                dist = objects[i].intersection_params(rays, pov, **kwargs)  # Calc distances until intersection for current object
+                dist = objects[i].intersection_params(rays, pov)  # Calc distances until intersection for current object
                 ob_idxs, dists = self.collect_min(ob_idxs, dists, dist, i+1)  # updates closest distances for each ray and
                 # retains object. Idx counts from 1, not 0.
             comp_idxs = {} # Dictionary of indices of rays hitting each component
@@ -645,6 +655,7 @@ class Composite(Object):
         mins = where(new_array < mins, new_array, mins)
         return indices, mins
 
+    # composite objects need to reference object too. Save during intersect_params stage
     def gen_incident(self, rays):
         # Rays being passed are no longer the full set of rays, but only those that have hit the object in a 2D array
         # Which rays pertain to which component is stored in self.comp_idxs
@@ -654,6 +665,7 @@ class Composite(Object):
         # Incidents are processed linearly through the components, so we need to allocate them to the correct
         # position in the array
         for c in self.hit_components:   # For each component that has been hit
+            print(c, "hit_num" , len(self.COMPONENTS[c].temp_hits[0]))
             incidents[current_idx:current_idx + len(self.COMPONENTS[c].temp_hits[0])] = \
                 self.COMPONENTS[c].gen_incident(self.COMPONENTS[c].temp_hits)  # Need to allocate incidents to correct position in array
             current_idx += len(self.COMPONENTS[c].temp_hits)  # Increment current_idx by number of hits in component
@@ -752,11 +764,8 @@ class Plane(Object):
     def perpendicularity(self, rays):  # ray_direction * plane_normal (if 0, then the ray is in the plane)
         return dot(rays, expand_dims(self.unit_normal, 0).T)
 
-    def intersection_params(self, rays, pov, **kwargs):
-        if "mask" in kwargs:
-            pass
-        else:
-            self.temp_ray_prod = self.perpendicularity(rays) # Store data for later use
+    def intersection_params(self, rays, pov):
+        self.temp_ray_prod = self.perpendicularity(rays) # Store data for later use
         intersection_constant = dot(array([0, 0, -self.constant]) - pov, self.unit_normal)
         ts = divide(intersection_constant, self.temp_ray_prod)
         ts[ts < 0] = NaN
@@ -1052,26 +1061,32 @@ class Triangle(Object):
     # array of rays. If no intersection, NaN is returned in that position.
 
     def interfunction(self, rays, pov):
-        rshape = rays.shape[1:] # Shape of the 3D array of rays
-        rays = rays.reshape((3, rays.shape[1] * rays.shape[2])).T # Reshapes into a 2D array of vectors.
-        epsilon = 1e-6
-        T = pov - self.p1 # Vector from p1 to pov (tvec)
-        P = cross(rays, self.v.reshape((1, 3)))  # Cross product of ray and v (pvec)
-        S = dot(P, self.u) # Dot product of pvec and u (determinant).
-        inv_det = where(abs(S)>epsilon, 1 / S, NaN) # Inverse determinant
-        U = multiply(dot(P, T), inv_det)  # Barycentric coordinate u
-        # try to whittle down the number of calculations
-        if True in (U >= 0) & (U <= 1): # If u is in the triangle, calculate v and t.
-            Q = cross(T, self.u) # Cross product of tvec and edge, u. This is constant.
-            V = where((U >= 0) & (U <= 1), dot(Q, rays.transpose()), NaN) * inv_det # Barycentric coordinate v
-            t = where(((V >= 0) & (U + V <= 1)), dot(Q, self.v), NaN) * inv_det # Distance to intersection point
-            t = where(t <= 0, NaN, t) # If t is negative, the intersection point is behind the pov.
-            V = V.reshape(rshape)
-            U = U.reshape(rshape)
-            t = t.reshape(rshape)
-            return U, V, t
+        # Hayden Killoh Dissertation Change - Optimizing interfunction calculation:
+        # Maintain and run the original calculation for maintaining proper profiling results.
+        if dissertation.solution_active(SolutionType.ORIG_INTER):
+            rshape = rays.shape[1:] # Shape of the 2D array of rays
+            rays = rays.reshape((3, rays.shape[1] * rays.shape[2])).T # Reshapes into a 2D array of vectors.
+            epsilon = 1e-6
+            T = pov - self.p1 # Vector from p1 to pov (tvec)
+            P = cross(rays, self.v.reshape((1, 3)))  # Cross product of ray and v (pvec)
+            S = dot(P, self.u) # Dot product of pvec and u (determinant).
+            inv_det = where(abs(S)>epsilon, 1 / S, NaN) # Inverse determinant
+            U = multiply(dot(P, T), inv_det)  # Barycentric coordinate u
+            # try to whittle down the number of calculations
+            if True in (U >= 0) & (U <= 1): # If u is in the triangle, calculate v and t.
+                Q = cross(T, self.u) # Cross product of tvec and edge, u. This is constant.
+                V = where((U >= 0) & (U <= 1), dot(Q, rays.transpose()), NaN) * inv_det # Barycentric coordinate v
+                t = where(((V >= 0) & (U + V <= 1)), dot(Q, self.v), NaN) * inv_det # Distance to intersection point
+                t = where(t <= 0, NaN, t) # If t is negative, the intersection point is behind the pov.
+                V = V.reshape(rshape)
+                U = U.reshape(rshape)
+                t = t.reshape(rshape)
+                return U, V, t
+            else:
+                return None, None, None
+        #If the original solution is not active, hand off to calc_interfunction to test optimised functions
         else:
-            return None, None, None
+            return calc_interfunction(rays, pov, self.p1, self.v, self.u)
 
     def intersect(self, rays, pov):
         _, _, t = self.interfunction(rays, pov)
@@ -1081,14 +1096,14 @@ class Triangle(Object):
         else:
             return full(rays.shape[0], False)
 
-    def intersection_params(self, rays, pov, **kwargs):
+    def intersection_params(self, rays, pov):
         _, _, t = self.interfunction(rays, pov) # Returns the distance to the intersection point.
         if t is not None:
             return t
         else:
             return full(rays.shape[1:], NaN) # Returns an array of NaNs if no intersection.
 
-    def intersection_points(self, rays, pov, **kwargs):
+    def intersection_points(self, rays, pov):
         U, V, _ = self.interfunction(rays, pov)
         if U is not None:
             U = U.reshape((U.shape[0], 1))

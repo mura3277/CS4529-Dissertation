@@ -20,7 +20,11 @@ cimport cython
 #To optimize the C code further, we want to specifcy the type of input arguments
 #Example: np.ndarray[DTYPE_t, ndim=3]
 def run(np.ndarray[DTYPE_t, ndim=3] rays, dict idx):
+    #Initialise the numpy array at the correct size
     cdef np.ndarray[DTYPE_t, ndim=2] formatted = np.empty((len(idx[-1][0]), 3), dtype=DTYPE)
+    #Main loop
     for c in range(len(idx[-1][0])):
+        #Assign rays to buffer
         formatted[c] = rays[:, idx[-1][0][c], idx[-1][1][c]]
+    #Output formatted array
     return formatted

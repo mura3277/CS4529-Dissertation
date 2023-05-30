@@ -22,15 +22,27 @@ cimport cython
 @cython.nonecheck(False)
 @cython.initializedcheck(False)
 def run(double[:,:,:] rays, dict idx):
+    #Initialise the numpy array at the correct size
     cdef double[:,:] formatted = np.empty((len(idx[-1][0]), 3), dtype=DTYPE)
+
+    #Integer cache variables
     cdef int a = 0
     cdef int b = 0
+
+    #Sub-Dimensional array cache
     cdef double[:] outer_dimn = formatted[0]
+
+    #Main loop
     for c in range(len(idx[-1][0])):
+        #Cache dictionary access
         a = idx[-1][0][c]
         b = idx[-1][1][c]
         outer_dimn = formatted[c]
+
+        #Assign rays to buffer
         outer_dimn[0] = rays[0, a, b]
         outer_dimn[1] = rays[1, a, b]
         outer_dimn[2] = rays[2, a, b]
+
+    #Output formatted array
     return formatted

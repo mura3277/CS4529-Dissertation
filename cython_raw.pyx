@@ -23,19 +23,30 @@ cimport cython
 @cython.nonecheck(False)
 @cython.initializedcheck(False)
 def run(double[:,:,:] rays, dict idx):
+    #Define C variable for size
     cdef int size = len(idx[-1][0])
+    #Memory pointer for array buffer
     cdef void* _buff_addr
     cdef double[:,:] buf
+    #Dynamically allocate memory directly from OS
     _buf_addr = malloc(size*3 * sizeof(double*))
+    #Assign pointer to buffer array
     buf = <double[:size,:3]>_buf_addr
 
+    #Integer cache variables
     cdef int a = 0
     cdef int b = 0
+
+    #Main loop
     for c in range(size):
+        #Cache dictionary access
         a = idx[-1][0][c]
         b = idx[-1][1][c]
+
+        #Assign rays to buffer
         buf[c][0] = rays[0, a, b]
         buf[c][1] = rays[1, a, b]
         buf[c][2] = rays[2, a, b]
 
+    #Output formatted array
     return np.asarray(buf)
